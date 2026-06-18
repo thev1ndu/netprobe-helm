@@ -1,15 +1,4 @@
-# ArtifactHub repository ownership verification file.
-# Place this file at the root of your git repository.
-#
-# Steps to publish:
-#   1. Go to https://artifacthub.io and sign in
-#   2. User menu → Control panel → Add repository
-#   3. Kind: Helm chart (using GitHub / GitLab / Bitbucket)
-#   4. URL: https://github.com/thev1ndu/aks-node-tcpdump
-#   5. Copy the repositoryID that ArtifactHub generates and paste it below
-#   6. Commit and push — ArtifactHub will verify ownership via this file
-
-repositoryID: ""   # paste the UUID from ArtifactHub here
+repositoryID: ""   # paste the UUID from ArtifactHub Control Panel here
 owners:
   - name: thevindu
     email: claudeheavenly@gmail.com
