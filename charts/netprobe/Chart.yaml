@@ -1,0 +1,24 @@
+apiVersion: v2
+name: netprobe
+description: |
+  Privileged debug pod (or DaemonSet) for AKS node-level packet capture.
+  Deploys via Helm, auto-starts tcpdump, and writes rotating .pcap files
+  directly to an Azure File Share over SMB — no cluster shell access required.
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+
+home: https://github.com/thev1ndu/netprobe-helm
+sources:
+  - https://github.com/thev1ndu/netprobe-helm
+  - https://github.com/thev1ndu/aks-node-tcpdump
+
+annotations:
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/operator: "false"
+  artifacthub.io/prerelease: "false"
+  artifacthub.io/category: monitoring-logging
+  artifacthub.io/containsSecurityUpdates: "false"
+  artifacthub.io/changes: |
+    - kind: added
+      description: Initial release — pod and DaemonSet modes, tcpdump auto-start, Azure File Share mount
