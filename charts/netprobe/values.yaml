@@ -1,0 +1,79 @@
+# -- Deployment mode: pod | daemonset
+deploymentMode: pod
+
+# -- Pod mode configuration
+pod:
+  # Pod name. Defaults to the Helm release name when empty.
+  name: ""
+  # Pin to a specific AKS node by name. Empty = scheduler picks.
+  nodeName: ""
+  # Keep the pod after capture ends so logs remain readable.
+  # DaemonSet always uses Always and ignores this field.
+  restartPolicy: Never
+
+# -- DaemonSet mode configuration
+daemonSet:
+  # Restrict to specific node pools via label selectors. Empty = all nodes.
+  # Example:
+  #   nodeSelector:
+  #     agentpool: userpool
+  nodeSelector: {}
+
+# -- Container image
+image:
+  # Container registry. Example: myacr.azurecr.io
+  registry: ""
+  repository: netprobe
+  # Image digest from CI (sha256:...). Takes priority over tag when set.
+  digest: ""
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# -- Azure File Share — .pcap files are written here over SMB
+azureFileShare:
+  # Kubernetes secret containing azurestorageaccountname and azurestorageaccountkey
+  secretName: azure-storage-account-credentials-secret
+  shareName: fileshare
+  # Mount path inside the container
+  mountPath: /mnt/fileshare
+  readOnly: false
+
+# -- Capture mode: tcpdump | shell
+# tcpdump  — tcpdump starts automatically; .pcap files written to File Share
+# shell    — container idles (sleep infinity); kubectl exec in to run tools manually
+captureMode: tcpdump
+
+# -- tcpdump settings (captureMode: tcpdump only)
+tcpdump:
+  # Network interface: any | eth0 | ens4
+  interface: any
+  # Rotate output file every N seconds
+  rotateSeconds: 300
+  # BPF host filter. Example: 10.0.0.1. Empty = capture all traffic.
+  filterHost: ""
+  # Output directory inside the container. Should be under azureFileShare.mountPath.
+  outputDir: /mnt/fileshare/dumps
+  # Filename prefix for .pcap files
+  filePrefix: capture
+  # Verbose mode: print packets to stdout only; no .pcap file is written.
+  verbose: false
+
+# -- Security — privileged + host namespaces are required for node-level capture
+securityContext:
+  privileged: true
+
+hostNetwork: true
+hostPID: true
+
+# -- Tolerate all node taints so the pod can land on any AKS node
+tolerations:
+  - operator: Exists
+
+# -- Resource requests and limits (leave empty for no limits)
+# resources:
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
+#   limits:
+#     memory: 512Mi
+resources: {}

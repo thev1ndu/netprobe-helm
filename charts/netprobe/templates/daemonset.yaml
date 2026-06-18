@@ -1,0 +1,55 @@
+{{- if eq .Values.deploymentMode "daemonset" }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "netprobe.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "netprobe.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "netprobe.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "netprobe.labels" . | nindent 8 }}
+    spec:
+      hostNetwork: {{ .Values.hostNetwork }}
+      hostPID: {{ .Values.hostPID }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.daemonSet.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: netprobe
+          image: {{ include "netprobe.image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if eq .Values.captureMode "shell" }}
+          command: ["sleep", "infinity"]
+          {{- else }}
+          command:
+            - /bin/bash
+            - -c
+            - {{ include "netprobe.tcpdump.cmd.ds" . | quote }}
+          {{- end }}
+          securityContext:
+            privileged: {{ .Values.securityContext.privileged }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+          volumeMounts:
+            - name: azure-share
+              mountPath: {{ .Values.azureFileShare.mountPath }}
+      volumes:
+        - name: azure-share
+          azureFile:
+            secretName: {{ .Values.azureFileShare.secretName }}
+            shareName: {{ .Values.azureFileShare.shareName }}
+            readOnly: {{ .Values.azureFileShare.readOnly }}
+{{- end }}
