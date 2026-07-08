@@ -6,6 +6,35 @@ entries:
       artifacthub.io/changes: |
         - kind: added
           description: Initial release — pod and DaemonSet modes, tcpdump auto-start, Azure File Share mount
+        - kind: changed
+          description: Toleration now targets CriticalAddonsOnly=true:NoSchedule instead of tolerating all taints
+        - kind: changed
+          description: Mount path and capture output directory renamed to /mnt/netprobe and /mnt/netprobe/captures
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/operator: "false"
+      artifacthub.io/prerelease: "false"
+    apiVersion: v2
+    appVersion: 1.0.0
+    created: "2026-07-08T07:18:39.98195458Z"
+    description: 'Privileged debug pod (or DaemonSet) for AKS node-level packet capture.
+      Deploys via Helm, auto-starts tcpdump, and writes rotating .pcap files directly
+      to an Azure File Share over SMB — no cluster shell access required. '
+    digest: e59e35efea7fcc58d35373f5588473b97846de703ce48dfd164320db42acd091
+    home: https://github.com/thev1ndu/netprobe-helm
+    name: netprobe
+    sources:
+    - https://github.com/thev1ndu/netprobe-helm
+    - https://github.com/thev1ndu/aks-node-tcpdump
+    type: application
+    urls:
+    - https://github.com/thev1ndu/netprobe-helm/releases/download/netprobe-0.1.1/netprobe-0.1.1.tgz
+    version: 0.1.1
+  - annotations:
+      artifacthub.io/category: monitoring-logging
+      artifacthub.io/changes: |
+        - kind: added
+          description: Initial release — pod and DaemonSet modes, tcpdump auto-start, Azure File Share mount
       artifacthub.io/containsSecurityUpdates: "false"
       artifacthub.io/license: Apache-2.0
       artifacthub.io/operator: "false"
@@ -26,4 +55,4 @@ entries:
     urls:
     - https://github.com/thev1ndu/netprobe-helm/releases/download/netprobe-0.1.0/netprobe-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-18T04:57:27.963217804Z"
+generated: "2026-07-08T07:18:39.981967359Z"
