@@ -16,6 +16,35 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 1.0.0
+    created: "2026-07-08T10:37:23.404331448Z"
+    description: 'Privileged debug pod (or DaemonSet) for AKS node-level packet capture.
+      Deploys via Helm, auto-starts tcpdump, and writes rotating .pcap files directly
+      to an Azure File Share over SMB — no cluster shell access required. '
+    digest: 5301ece1818d4766e47498e30ee421da54b2db79c738b87837a8b7e7c4f64040
+    home: https://github.com/thev1ndu/debugprobe-helm
+    name: debugprobe
+    sources:
+    - https://github.com/thev1ndu/debugprobe-helm
+    - https://github.com/thev1ndu/aks-node-tcpdump
+    type: application
+    urls:
+    - https://github.com/thev1ndu/netprobe-helm/releases/download/debugprobe-0.1.2/debugprobe-0.1.2.tgz
+    version: 0.1.2
+  - annotations:
+      artifacthub.io/category: monitoring-logging
+      artifacthub.io/changes: |
+        - kind: added
+          description: Initial release — pod and DaemonSet modes, tcpdump auto-start, Azure File Share mount
+        - kind: changed
+          description: Toleration now targets CriticalAddonsOnly=true:NoSchedule instead of tolerating all taints
+        - kind: changed
+          description: Mount path and capture output directory renamed to /mnt/debugprobe and /mnt/debugprobe/captures
+      artifacthub.io/containsSecurityUpdates: "false"
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/operator: "false"
+      artifacthub.io/prerelease: "false"
+    apiVersion: v2
+    appVersion: 1.0.0
     created: "2026-07-08T10:37:02.15030761Z"
     description: 'Privileged debug pod (or DaemonSet) for AKS node-level packet capture.
       Deploys via Helm, auto-starts tcpdump, and writes rotating .pcap files directly
@@ -85,4 +114,4 @@ entries:
     urls:
     - https://github.com/thev1ndu/netprobe-helm/releases/download/netprobe-0.1.0/netprobe-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-08T10:37:02.150320634Z"
+generated: "2026-07-08T10:37:23.404346701Z"
