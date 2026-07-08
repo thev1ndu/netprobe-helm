@@ -1,4 +1,4 @@
-# netprobe
+# debugprobe
 
 Privileged debug pod (or DaemonSet) for AKS node-level packet capture. Deploys via Helm, auto-starts `tcpdump`, and writes rotating `.pcap` files directly to an Azure File Share over SMB — no cluster shell access required.
 
@@ -38,7 +38,7 @@ az storage directory create \
 **Pod mode — capture on a specific node:**
 
 ```bash
-helm upgrade --install debug-node-1 netprobe/netprobe \
+helm upgrade --install debug-node-1 debugprobe/debugprobe \
   --namespace kube-system \
   --set image.registry=myacr.azurecr.io \
   --set image.digest=sha256:<digest-from-ci> \
@@ -50,7 +50,7 @@ helm upgrade --install debug-node-1 netprobe/netprobe \
 **DaemonSet mode — capture across all nodes simultaneously:**
 
 ```bash
-helm upgrade --install netprobe netprobe/netprobe \
+helm upgrade --install debugprobe debugprobe/debugprobe \
   --namespace kube-system \
   --set image.registry=myacr.azurecr.io \
   --set image.digest=sha256:<digest-from-ci> \
@@ -61,7 +61,7 @@ helm upgrade --install netprobe netprobe/netprobe \
 **Shell/interactive mode — exec in to run tools manually:**
 
 ```bash
-helm upgrade --install debug-shell netprobe/netprobe \
+helm upgrade --install debug-shell debugprobe/debugprobe \
   --namespace kube-system \
   --set image.registry=myacr.azurecr.io \
   --set image.digest=sha256:<digest-from-ci> \
@@ -89,19 +89,19 @@ helm uninstall debug-node-1 -n kube-system
 | `pod.restartPolicy` | string | `Never` | Pod restart policy (DaemonSet always uses Always) |
 | `daemonSet.nodeSelector` | object | `{}` | Restrict DaemonSet to specific node pools; empty = all nodes |
 | `image.registry` | string | `""` | Container registry (e.g. `myacr.azurecr.io`) |
-| `image.repository` | string | `netprobe` | Image repository name |
+| `image.repository` | string | `debugprobe` | Image repository name |
 | `image.digest` | string | `""` | Image digest (`sha256:...`); takes priority over `image.tag` |
 | `image.tag` | string | `latest` | Image tag; ignored when `image.digest` is set |
 | `image.pullPolicy` | string | `IfNotPresent` | Image pull policy |
 | `azureFileShare.secretName` | string | `azure-storage-account-credentials-secret` | K8s secret with storage account credentials |
 | `azureFileShare.shareName` | string | `fileshare` | Azure File Share name |
-| `azureFileShare.mountPath` | string | `/mnt/netprobe` | Mount path inside the container |
+| `azureFileShare.mountPath` | string | `/mnt/debugprobe` | Mount path inside the container |
 | `azureFileShare.readOnly` | bool | `false` | Mount the share read-only |
 | `captureMode` | string | `tcpdump` | `tcpdump` (auto-start) or `shell` (idle, exec in manually) |
 | `tcpdump.interface` | string | `any` | Network interface to capture on |
 | `tcpdump.rotateSeconds` | int | `300` | Rotate `.pcap` file every N seconds |
 | `tcpdump.filterHost` | string | `""` | BPF host filter (e.g. `10.0.0.1`); empty = all traffic |
-| `tcpdump.outputDir` | string | `/mnt/netprobe/captures` | Output directory for `.pcap` files |
+| `tcpdump.outputDir` | string | `/mnt/debugprobe/captures` | Output directory for `.pcap` files |
 | `tcpdump.filePrefix` | string | `capture` | Filename prefix for `.pcap` files |
 | `tcpdump.verbose` | bool | `false` | Print packets to stdout only; no `.pcap` file written |
 | `securityContext.privileged` | bool | `true` | Required for raw socket access and host network capture |

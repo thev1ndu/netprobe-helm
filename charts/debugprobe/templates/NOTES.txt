@@ -1,13 +1,13 @@
-NetProbe deployed in {{ .Values.deploymentMode | upper }} mode.
+DebugProbe deployed in {{ .Values.deploymentMode | upper }} mode.
 
 {{- if eq .Values.deploymentMode "pod" }}
 
-  Pod:        {{ include "netprobe.podName" . }}
+  Pod:        {{ include "debugprobe.podName" . }}
   Namespace:  {{ .Release.Namespace }}
   Node:       {{ if .Values.pod.nodeName }}{{ .Values.pod.nodeName }}{{ else }}(scheduler picks){{ end }}
 {{- else }}
 
-  DaemonSet:  {{ include "netprobe.fullname" . }}
+  DaemonSet:  {{ include "debugprobe.fullname" . }}
   Namespace:  {{ .Release.Namespace }}
   Nodes:      {{ if .Values.daemonSet.nodeSelector }}selected by nodeSelector{{ else }}all nodes{{ end }}
 {{- end }}
@@ -25,20 +25,20 @@ Useful commands:
 {{- if eq .Values.deploymentMode "pod" }}
 
   # Stream tcpdump output:
-  kubectl logs -f {{ include "netprobe.podName" . }} -n {{ .Release.Namespace }}
+  kubectl logs -f {{ include "debugprobe.podName" . }} -n {{ .Release.Namespace }}
 
   # Exec in for interactive debugging:
-  kubectl exec -it {{ include "netprobe.podName" . }} -n {{ .Release.Namespace }} -- /bin/bash
+  kubectl exec -it {{ include "debugprobe.podName" . }} -n {{ .Release.Namespace }} -- /bin/bash
 
   # Watch pod status:
-  kubectl get pod {{ include "netprobe.podName" . }} -n {{ .Release.Namespace }} -w
+  kubectl get pod {{ include "debugprobe.podName" . }} -n {{ .Release.Namespace }} -w
 {{- else }}
 
   # Stream capture logs from all nodes:
-  kubectl logs -l app.kubernetes.io/name=netprobe -n {{ .Release.Namespace }} --prefix -f
+  kubectl logs -l app.kubernetes.io/name=debugprobe -n {{ .Release.Namespace }} --prefix -f
 
   # List pods (one per node):
-  kubectl get pods -l app.kubernetes.io/name=netprobe -n {{ .Release.Namespace }} -o wide
+  kubectl get pods -l app.kubernetes.io/name=debugprobe -n {{ .Release.Namespace }} -o wide
 
   # Exec into a specific node's pod:
   kubectl exec -it <pod-name> -n {{ .Release.Namespace }} -- /bin/bash

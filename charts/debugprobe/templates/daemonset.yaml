@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ include "netprobe.fullname" . }}
+  name: {{ include "debugprobe.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "netprobe.labels" . | nindent 4 }}
+    {{- include "debugprobe.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
-      {{- include "netprobe.selectorLabels" . | nindent 6 }}
+      {{- include "debugprobe.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "netprobe.labels" . | nindent 8 }}
+        {{- include "debugprobe.labels" . | nindent 8 }}
     spec:
       hostNetwork: {{ .Values.hostNetwork }}
       hostPID: {{ .Values.hostPID }}
@@ -26,8 +26,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: netprobe
-          image: {{ include "netprobe.image" . | quote }}
+        - name: debugprobe
+          image: {{ include "debugprobe.image" . | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if eq .Values.captureMode "shell" }}
           command: ["sleep", "infinity"]
@@ -35,7 +35,7 @@ spec:
           command:
             - /bin/bash
             - -c
-            - {{ include "netprobe.tcpdump.cmd.ds" . | quote }}
+            - {{ include "debugprobe.tcpdump.cmd.ds" . | quote }}
           {{- end }}
           securityContext:
             privileged: {{ .Values.securityContext.privileged }}

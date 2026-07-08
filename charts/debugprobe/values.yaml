@@ -23,7 +23,7 @@ daemonSet:
 image:
   # Container registry. Example: myacr.azurecr.io
   registry: ""
-  repository: netprobe
+  repository: debugprobe
   # Image digest from CI (sha256:...). Takes priority over tag when set.
   digest: ""
   tag: latest
@@ -35,7 +35,7 @@ azureFileShare:
   secretName: azure-storage-account-credentials-secret
   shareName: fileshare
   # Mount path inside the container
-  mountPath: /mnt/netprobe
+  mountPath: /mnt/debugprobe
   readOnly: false
 
 # -- Capture mode: tcpdump | shell
@@ -52,7 +52,7 @@ tcpdump:
   # BPF host filter. Example: 10.0.0.1. Empty = capture all traffic.
   filterHost: ""
   # Output directory inside the container. Should be under azureFileShare.mountPath.
-  outputDir: /mnt/netprobe/captures
+  outputDir: /mnt/debugprobe/captures
   # Filename prefix for .pcap files
   filePrefix: capture
   # Verbose mode: print packets to stdout only; no .pcap file is written.

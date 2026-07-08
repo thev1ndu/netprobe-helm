@@ -1,11 +1,11 @@
-# netprobe-helm
+# debugprobe-helm
 
-Helm chart repository for [NetProbe](https://github.com/thev1ndu/aks-node-tcpdump) — a privileged debug pod/DaemonSet for AKS node-level packet capture via `tcpdump`.
+Helm chart repository for [DebugProbe](https://github.com/thev1ndu/aks-node-tcpdump) — a privileged debug pod/DaemonSet for AKS node-level packet capture via `tcpdump`.
 
 ## Add the Helm repository
 
 ```bash
-helm repo add netprobe https://thev1ndu.github.io/netprobe-helm
+helm repo add debugprobe https://thev1ndu.github.io/debugprobe-helm
 helm repo update
 ```
 
@@ -14,7 +14,7 @@ helm repo update
 **Pod mode — capture on a specific node:**
 
 ```bash
-helm install debug-node-1 netprobe/netprobe \
+helm install debug-node-1 debugprobe/debugprobe \
   --namespace kube-system \
   --set image.registry=myacr.azurecr.io \
   --set image.digest=sha256:<digest-from-ci> \
@@ -25,7 +25,7 @@ helm install debug-node-1 netprobe/netprobe \
 **DaemonSet mode — capture across all nodes:**
 
 ```bash
-helm install netprobe netprobe/netprobe \
+helm install debugprobe debugprobe/debugprobe \
   --namespace kube-system \
   --set image.registry=myacr.azurecr.io \
   --set image.digest=sha256:<digest-from-ci> \
@@ -36,7 +36,7 @@ helm install netprobe netprobe/netprobe \
 **Shell mode — exec in to run tools manually:**
 
 ```bash
-helm install debug-shell netprobe/netprobe \
+helm install debug-shell debugprobe/debugprobe \
   --namespace kube-system \
   --set image.registry=myacr.azurecr.io \
   --set image.digest=sha256:<digest-from-ci> \
@@ -56,7 +56,7 @@ helm uninstall debug-node-1 -n kube-system
 
 | Chart | Description |
 |-------|-------------|
-| [netprobe](charts/netprobe/README.md) | Privileged debug pod/DaemonSet for AKS node-level packet capture |
+| [debugprobe](charts/debugprobe/README.md) | Privileged debug pod/DaemonSet for AKS node-level packet capture |
 
 ## Prerequisites
 
@@ -71,7 +71,7 @@ kubectl create secret generic azure-storage-account-credentials-secret \
   --from-literal=azurestorageaccountkey=<storage-key>
 ```
 
-See [NetProbe](https://github.com/thev1ndu/aks-node-tcpdump) for the full setup guide.
+See [DebugProbe](https://github.com/thev1ndu/aks-node-tcpdump) for the full setup guide.
 
 ## License
 
