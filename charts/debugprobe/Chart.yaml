@@ -5,7 +5,7 @@ description: |
   Deploys via Helm, auto-starts tcpdump, and writes rotating .pcap files
   directly to an Azure File Share over SMB — no cluster shell access required.
 type: application
-version: 0.1.1
+version: 0.1.2
 appVersion: "1.0.0"
 
 home: https://github.com/thev1ndu/debugprobe-helm
