@@ -7,7 +7,7 @@ Privileged debug pod (or DaemonSet) for AKS node-level packet capture. Deploys v
 ```
 helm install → Pod or DaemonSet in kube-system
                 └─ tcpdump auto-starts on container start
-                   └─ *.pcap → Azure File Share (fileshare/dumps/)
+                   └─ *.pcap → Azure File Share (fileshare/captures/)
                                └─ download via Azure CLI or portal
 ```
 
@@ -24,13 +24,13 @@ kubectl create secret generic azure-storage-account-credentials-secret \
   --from-literal=azurestorageaccountkey=<storage-key>
 ```
 
-- A `dumps/` directory inside the share:
+- A `captures/` directory inside the share:
 
 ```bash
 az storage directory create \
   --account-name <storage-account> \
   --share-name fileshare \
-  --name dumps
+  --name captures
 ```
 
 ## Installation
@@ -95,19 +95,19 @@ helm uninstall debug-node-1 -n kube-system
 | `image.pullPolicy` | string | `IfNotPresent` | Image pull policy |
 | `azureFileShare.secretName` | string | `azure-storage-account-credentials-secret` | K8s secret with storage account credentials |
 | `azureFileShare.shareName` | string | `fileshare` | Azure File Share name |
-| `azureFileShare.mountPath` | string | `/mnt/fileshare` | Mount path inside the container |
+| `azureFileShare.mountPath` | string | `/mnt/netprobe` | Mount path inside the container |
 | `azureFileShare.readOnly` | bool | `false` | Mount the share read-only |
 | `captureMode` | string | `tcpdump` | `tcpdump` (auto-start) or `shell` (idle, exec in manually) |
 | `tcpdump.interface` | string | `any` | Network interface to capture on |
 | `tcpdump.rotateSeconds` | int | `300` | Rotate `.pcap` file every N seconds |
 | `tcpdump.filterHost` | string | `""` | BPF host filter (e.g. `10.0.0.1`); empty = all traffic |
-| `tcpdump.outputDir` | string | `/mnt/fileshare/dumps` | Output directory for `.pcap` files |
+| `tcpdump.outputDir` | string | `/mnt/netprobe/captures` | Output directory for `.pcap` files |
 | `tcpdump.filePrefix` | string | `capture` | Filename prefix for `.pcap` files |
 | `tcpdump.verbose` | bool | `false` | Print packets to stdout only; no `.pcap` file written |
 | `securityContext.privileged` | bool | `true` | Required for raw socket access and host network capture |
 | `hostNetwork` | bool | `true` | Share the node's network namespace |
 | `hostPID` | bool | `true` | Share the node's PID namespace |
-| `tolerations` | list | `[{operator: Exists}]` | Tolerate all taints so the pod lands on any node |
+| `tolerations` | list | `[{key: CriticalAddonsOnly, operator: Equal, value: "true", effect: NoSchedule}]` | Tolerate the CriticalAddonsOnly taint so the pod lands on system nodes |
 | `resources` | object | `{}` | CPU/memory requests and limits |
 
 ## Download captures
@@ -116,7 +116,7 @@ helm uninstall debug-node-1 -n kube-system
 # Download all .pcap files
 az storage file download-batch \
   --account-name <storage-account> \
-  --source "fileshare/dumps" \
+  --source "fileshare/captures" \
   --destination ./captures \
   --pattern "*.pcap"
 

@@ -35,7 +35,7 @@ azureFileShare:
   secretName: azure-storage-account-credentials-secret
   shareName: fileshare
   # Mount path inside the container
-  mountPath: /mnt/fileshare
+  mountPath: /mnt/netprobe
   readOnly: false
 
 # -- Capture mode: tcpdump | shell
@@ -48,11 +48,11 @@ tcpdump:
   # Network interface: any | eth0 | ens4
   interface: any
   # Rotate output file every N seconds
-  rotateSeconds: 300
+  rotateSeconds: 60
   # BPF host filter. Example: 10.0.0.1. Empty = capture all traffic.
   filterHost: ""
   # Output directory inside the container. Should be under azureFileShare.mountPath.
-  outputDir: /mnt/fileshare/dumps
+  outputDir: /mnt/netprobe/captures
   # Filename prefix for .pcap files
   filePrefix: capture
   # Verbose mode: print packets to stdout only; no .pcap file is written.
@@ -65,15 +65,17 @@ securityContext:
 hostNetwork: true
 hostPID: true
 
-# -- Tolerate all node taints so the pod can land on any AKS node
+# -- Tolerate the CriticalAddonsOnly taint so the pod can land on system nodes
 tolerations:
-  - operator: Exists
+  - key: CriticalAddonsOnly
+    operator: Equal
+    value: "true"
+    effect: NoSchedule
 
 # -- Resource requests and limits (leave empty for no limits)
-# resources:
-#   requests:
-#     cpu: 100m
-#     memory: 128Mi
-#   limits:
-#     memory: 512Mi
-resources: {}
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    memory: 512Mi
